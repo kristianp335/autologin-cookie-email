@@ -187,7 +187,7 @@ public class AutoLoginCookieEmail extends BaseAutoLogin {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}		
-		
+		//need to turn off password reset, terms and password reminder question etc TODO
 		return createdUser;		
 	}
 

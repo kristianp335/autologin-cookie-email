@@ -95,17 +95,29 @@ public class AutoLoginCookieEmail extends BaseAutoLogin {
 	}
 
 	//this method just creates the user, it attempts to split the email address of the user for names
+	//You probably want to work on the email splitting
 	private User addUser(String virtualUser, HttpServletRequest servletRequest ) {	
 		
 		Company company = null;
 		String[] parts = virtualUser.split("@");
 	    String names = parts[0];
-	    System.out.println("the name part is " + names);
 	    String[] namesSplit = names.split("\\.");
-	    String codedFirstName = namesSplit[0];
-	    System.out.println("the first name part is " + codedFirstName);
-	    String codedSurname = namesSplit[1];
-	    System.out.println("the surname part is " + codedSurname);
+	    String codedFirstName = "";
+	    String codedSurname = "";
+	    
+	    if (namesSplit.length > 1) 
+	    {
+	    	codedFirstName = namesSplit[0];
+	    	codedSurname = namesSplit[1];
+	    }
+	    
+	    else
+	    
+	    {
+	    	codedFirstName = names;
+	    	codedSurname = names;
+	    }
+	   	   
 	    String codedScreenName = codedFirstName + codedSurname;
 		   
 		try {

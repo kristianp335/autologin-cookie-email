@@ -36,8 +36,7 @@ import org.osgi.service.component.annotations.Reference;
 public class AutoLoginCookieEmail extends BaseAutoLogin {
 	
 	private String[] credentials = new String[3];
-	private String mailDomain = "liferay.com";
-	
+	private String mailDomain = "liferay.com";	
 
 	@Override
 	protected String[] doHandleException(
@@ -54,8 +53,10 @@ public class AutoLoginCookieEmail extends BaseAutoLogin {
 		throws Exception {
 	
 		String virtualUser = "";		
-		
+		//get all the cookies from the request
 		Cookie[] allCookies = servletRequest.getCookies();
+		
+		//loop through cookies looking for a cookie called virtualuser which is an email address
 		for (int i = 0; i < allCookies.length; i++ )
 		{
 			System.out.println(allCookies[i].getName());
@@ -66,18 +67,23 @@ public class AutoLoginCookieEmail extends BaseAutoLogin {
 				virtualUser = allCookies[i].getValue();
 			}
 		}
+		
+		//check to see if virtual user in not an empty string
 		if (virtualUser != "")
 		{	
 			Company company = CompanyLocalServiceUtil.getCompanyByMx(mailDomain);
 			long companyId = company.getCompanyId();
+			//find if a user already exists with the same email address
 			User user = _userLocalService.fetchUserByEmailAddress(companyId, virtualUser);
 			
+			//if no user exists then create the user and get the credentials
 			if (user == null)
 			{
 				user = addUser(virtualUser, servletRequest);
 				credentials = getCredentials(user);
 			}
 			
+			//else just get the credentials of the user
 			else
 			{
 				credentials = getCredentials(user);
@@ -88,7 +94,7 @@ public class AutoLoginCookieEmail extends BaseAutoLogin {
 		return credentials;
 	}
 
-	
+	//this method just creates the user, it attempts to split the email address of the user for names
 	private User addUser(String virtualUser, HttpServletRequest servletRequest ) {	
 		
 		Company company = null;
@@ -192,6 +198,7 @@ public class AutoLoginCookieEmail extends BaseAutoLogin {
         return null;
     }
 	
+	//this methods gets the credentials for login
 	private String[] getCredentials(User user)
 	{	
 		

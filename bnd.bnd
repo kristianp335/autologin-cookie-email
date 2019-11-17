@@ -1,0 +1,3 @@
+Bundle-Name: autologin-cookie-email
+Bundle-SymbolicName: com.liferay.kris.autologin
+Bundle-Version: 1.0.0

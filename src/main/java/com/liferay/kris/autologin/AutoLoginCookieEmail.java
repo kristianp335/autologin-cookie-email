@@ -69,25 +69,35 @@ public class AutoLoginCookieEmail extends BaseAutoLogin {
 		//check to see if virtual user in not an empty string
 		if (virtualUser != "")
 		{	
-			Company company = CompanyLocalServiceUtil.getCompanyByMx(mailDomain);
-			long companyId = company.getCompanyId();
-			//find if a user already exists with the same email address
-			User user = _userLocalService.fetchUserByEmailAddress(companyId, virtualUser);
-			
-			//if no user exists then create the user and get the credentials
-			if (user == null)
-			{
-				user = addUser(virtualUser, servletRequest);
-				credentials = getCredentials(user);
+			if (virtualUser == "donotlogin@liferay.com")
+			{	
+				System.out.println("No one should be logged in");
+				return credentials;
+				
 			}
 			
-			//else just get the credentials of the user
-			else
-			{
-				credentials = getCredentials(user);
-			}		
-	
-			return credentials;
+			else {
+			
+				Company company = CompanyLocalServiceUtil.getCompanyByMx(mailDomain);
+				long companyId = company.getCompanyId();
+				//find if a user already exists with the same email address
+				User user = _userLocalService.fetchUserByEmailAddress(companyId, virtualUser);
+				
+				//if no user exists then create the user and get the credentials
+				if (user == null)
+				{
+					user = addUser(virtualUser, servletRequest);
+					credentials = getCredentials(user);
+				}
+				
+				//else just get the credentials of the user
+				else
+				{
+					credentials = getCredentials(user);
+				}		
+		
+				return credentials;
+			}
 		}
 		return credentials;
 	}
@@ -185,7 +195,7 @@ public class AutoLoginCookieEmail extends BaseAutoLogin {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}		
-		//need to turn off password reset, terms and password reminder question etc TODO
+		//need to turn off password reset, terms and password reminder question etc
 		createdUser.setAgreedToTermsOfUse(true);
 		createdUser.setPasswordReset(false);
 		createdUser.setReminderQueryQuestion("auto account");

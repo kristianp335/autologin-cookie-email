@@ -59,8 +59,6 @@ public class AutoLoginCookieEmail extends BaseAutoLogin {
 		//loop through cookies looking for a cookie called virtualuser which is an email address
 		for (int i = 0; i < allCookies.length; i++ )
 		{
-			System.out.println(allCookies[i].getName());
-			System.out.println(allCookies[i].getValue());
 			
 			if (allCookies[i].getName().contains("virtualuser"))
 			{
@@ -188,6 +186,12 @@ public class AutoLoginCookieEmail extends BaseAutoLogin {
 			e.printStackTrace();
 		}		
 		//need to turn off password reset, terms and password reminder question etc TODO
+		createdUser.setAgreedToTermsOfUse(true);
+		createdUser.setPasswordReset(false);
+		createdUser.setReminderQueryQuestion("auto account");
+		createdUser.setReminderQueryAnswer("auto account");
+		_userLocalService.updateUser(createdUser);
+		
 		return createdUser;		
 	}
 

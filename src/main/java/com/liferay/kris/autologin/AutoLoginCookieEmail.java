@@ -14,7 +14,9 @@ import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.util.CookieKeys;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.StringPool;
 
 import java.util.Locale;
 
@@ -56,10 +58,11 @@ public class AutoLoginCookieEmail extends BaseAutoLogin {
 		//get all the cookies from the request
 		Cookie[] allCookies = servletRequest.getCookies();
 		
+		
 		//loop through cookies looking for a cookie called virtualuser which is an email address
 		for (int i = 0; i < allCookies.length; i++ )
 		{
-			
+			System.out.println(allCookies[i].getName() + " = " + allCookies[i].getValue() );
 			if (allCookies[i].getName().contains("virtualuser"))
 			{
 				virtualUser = allCookies[i].getValue();
@@ -88,18 +91,23 @@ public class AutoLoginCookieEmail extends BaseAutoLogin {
 				{
 					user = addUser(virtualUser, servletRequest);
 					credentials = getCredentials(user);
+					
 				}
 				
 				//else just get the credentials of the user
 				else
 				{
 					credentials = getCredentials(user);
+					
 				}		
 		
 				return credentials;
 			}
+			
 		}
-		return credentials;
+		
+		return null;
+		
 	}
 
 	//this method just creates the user, it attempts to split the email address of the user for names

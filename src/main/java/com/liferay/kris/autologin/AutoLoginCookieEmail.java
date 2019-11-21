@@ -4,6 +4,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.RoleConstants;
 import com.liferay.portal.kernel.model.User;
@@ -11,6 +12,7 @@ import com.liferay.portal.kernel.security.auto.login.AutoLogin;
 import com.liferay.portal.kernel.security.auto.login.AutoLoginException;
 import com.liferay.portal.kernel.security.auto.login.BaseAutoLogin;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
+import com.liferay.portal.kernel.service.OrganizationLocalServiceUtil;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
@@ -114,6 +116,8 @@ public class AutoLoginCookieEmail extends BaseAutoLogin {
 	//You probably want to work on the email splitting
 	private User addUser(String virtualUser, HttpServletRequest servletRequest ) {	
 		
+		//site id is for site membership, this is hardcoded get it from the Liferay instance
+		long siteId = 88392;
 		Company company = null;
 		String[] parts = virtualUser.split("@");
 	    String names = parts[0];
@@ -143,6 +147,14 @@ public class AutoLoginCookieEmail extends BaseAutoLogin {
 			e2.printStackTrace();
 		}
 		long companyId = company.getCompanyId();
+		Organization organization = null;
+		try {
+			organization = OrganizationLocalServiceUtil.getOrganization(companyId, "JM");
+		} catch (PortalException e3) {
+			// TODO Auto-generated catch block
+			e3.printStackTrace();
+		}
+		long organizationId = organization.getOrganizationId();
 	    long adminUserId = 0;
 		Role role = null;
         try {
@@ -180,8 +192,10 @@ public class AutoLoginCookieEmail extends BaseAutoLogin {
 		int birthdayDay = 11;
 		int birthdayYear = 1977;
 		String jobTitle = "";
-		long[] groupIds = null;
-		long[] organizationIds = null;
+		long[] groupIds = new long[1];
+		groupIds[0] = siteId;
+		long[] organizationIds = new long[1];
+		organizationIds[0] = organizationId;
 		long[] roleIds = null;
 		long[] userGroupIds = null;
 		boolean sendEmail = false;
